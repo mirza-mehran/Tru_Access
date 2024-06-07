@@ -1,0 +1,148 @@
+﻿@model IEnumerable<ExampleGridProduct.Models.Product>
+
+@{
+    ViewBag.Title = "Products";
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Products</h2>
+
+    <div class="d-flex justify-content-end mb-2">
+        <!-- Link to trigger modal -->
+        <a href="#" class="" data-toggle="modal" data-target="#exampleModalCenter">
+            <i class="fa-solid fa-user-plus"></i>Add
+        </a>
+    </div>
+</div>
+<input class="searchfield form-control" id="myInput" type="text" placeholder="Search..">
+
+
+<!-- Modal for Create -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="model-header">
+                <h5 class="modal-title" id="exampleModalCenter">Create Product</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Render Create form -->
+                @Html.Partial("_CreateOrUpdate", new ExampleGridProduct.Models.Product())
+            </div>
+                @*<div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>*@
+            </div>
+        </div>
+</div>
+<!-- Modal for Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="model-header">
+                <h5 class="modal-title" id="editModal">Edit Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Render Create form -->
+
+            </div>
+            @*<div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>*@
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product_Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Glass_Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Thickness)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Color)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PartNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsSurface)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody id="myTable">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Glass_Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Thickness)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Color)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PartNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsSurface)
+                </td>
+                <td>
+                    <button class="edit-btn btn btn-secondary btn-sm" data-id="@item.Id">Edit</button> 
+                    @*@Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-info btn-sm" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" })*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+
+            $('#exampleModalCenter').on('shown.bs.modal', function () {
+                // Focus on the first input element in the modal when it is shown
+                $(this).find('input[type=text], textarea, select').filter(':visible:first').focus();
+            });
+
+            $('.edit-btn').click(function () {
+                var id = $(this).data('id');
+                $.get('@Url.Action("Edit", "Products")', { id: id }, function (data) {
+                    $('#editModal .modal-body').html(data);
+                    $('#editModal').modal('show');
+                });
+            });
+        });
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+         
+    </script>
+}

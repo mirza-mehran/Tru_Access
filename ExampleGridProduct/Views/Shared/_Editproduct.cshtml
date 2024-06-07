@@ -1,0 +1,81 @@
+﻿@model ExampleGridProduct.Models.Product
+
+@using (Html.BeginForm("Edit", "Products", FormMethod.Post, new { @id = "EditProductForm", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+    <div class="form-group row">
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Product_Type, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Product_Type, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Product_Type, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Glass_Type, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Glass_Type, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Glass_Type, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Thickness, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Thickness, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Thickness, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Color, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Color, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Color, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.PartNo, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.PartNo, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.PartNo, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.IsSurface, htmlAttributes: new { @class = "control-label" })
+
+            @Html.EditorFor(model => model.IsSurface, new { htmlAttributes = new { @class = "d-block" } })
+            @Html.ValidationMessageFor(model => model.IsSurface, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            $('#EditProductForm').submit(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                $.ajax({
+                    url: '@Url.Action("Edit", "Products")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        if (result.success) {
+                            $('#exampleModalCenter').modal('hide'); // Hide the modal
+                            location.reload(); // Reload the page to refresh the index
+                        } else {
+                            $('#exampleModalCenter .modal-body').html(result); // Replace the modal body with the partial view containing validation messages
+                        }
+                    },
+                    error: function () {
+                        alert('Error creating product.');
+                    }
+                });
+            });
+        });
+    </script>
+}
